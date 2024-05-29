@@ -1,0 +1,194 @@
+###########################< PERT 1 : expressjs, http status code, eslint >############################
+
+npm init
+
+### Express js
+npm install express
+
+### Eslint (install eslint extentionnya dulu)
+npm install eslint --save-dev (simpan sebagai dependencies dev)
+npm init @eslint/config
+	pilih
+	To check syntax, fix problem, and enforce code style
+	commonjs
+	framework: none
+	Typescript: no
+	code run: node
+	style: popular syle
+	style guide: Airbnb
+	format: JSON
+	yes
+	npm
+ubah end of line sequence menjadi LF (kanan utf8)
+
+### Nodemon
+npm install nodemon --save-dev
+
+//dalam file package.json ubah isi "scripts" menjadi "start-dev": "nodemon index.js" agar bisa di run ke npm run start-dev
+
+Buat file index.js jalankan dengan postman/ thunder client localhost:PORT/ perhatikan urutan routernya
+
+###########################< PERT 2 : routing, middleware, request&resposnse >############################
+
+Buat folder routers{index.js, menu.router.js}, controllers{index.js, menu.controller.js}, dataMock{menu.js} (pengganti database sementara), middleware{not found.js,
+
+###########################< PERT 3 : exception handler, data validation >############################
+
+buat folder custom error/error{clientError.js, AuthorizationError.js, AuthenticationError.js, NotFoundError.js}, di folder middleware tambahin{error-handler.js}
+
+## Joi
+npm install joi
+
+buat filder validation{menu-validation.js} di dalam middleware
+
+###########################< PERT 4 : mongodb, postgresql >############################
+
+## Prisma ORM
+npm install prisma --save-dev
+npx prisma
+npx prisma init
+
+## CMD ke Postgresql
+psql -U postgres
+pw
+CREATE USER adminresto WITH PASSWORD 'password';
+CREATE DATABASE menu OWNER adminresto;
+GRANT ALL PRIVILEGES ON DATABASE menu TO adminresto;
+ALTER USER adminresto CREATEDB;
+exit
+psql -d menu -U adminresto
+
+masukkin datanya ke file.env
+buat schema di schema.prisma
+
+npx prisma migrate dev --name init
+
+cek di CMD
+menu-> \d
+
+npm install @prisma/client
+
+gunakan prisma di menu.controller.s(diimport)
+ganti data dari dataMock ke database menu untuk setiap contoller
+
+## UUID
+npm install uuid (untuk generate id)
+di cmd database menu jalankan : CREATE EXTENTION IF NOT EXISTS "uuid-ossp";
+untuk generate id Kategori
+
+
+test di thunder client
+
+menu=> SELECT*FROM "Kategori";
+                  id                  | kategori
+--------------------------------------+----------
+ 91475da3-535f-4e62-be00-dffb120e24c3 | Pizza
+ b6845b42-7b2d-4846-aaef-480ad3256e32 | Pasta
+ 0b459655-07a2-43dd-af69-dfd5ee19a327 | Snack
+ 22414270-24f7-4386-936f-3e771fa72d7e | Drink
+
+ menu=> SELECT*FROM "Ukuran";
+                  id                  |               ukuran
+--------------------------------------+------------------------------------
+ 74fd609c-c80a-4bb2-b6e6-2deb4056234a | Normal "( biaya tambahan 0%)"
+ e0d6dd3b-d7eb-4f2f-8966-e1526f86260c | Super-size "( biaya tambahan 20%)"
+ 8a25ec41-5229-466d-a83d-5798db5e19ba | King-size "( biaya tambahan 60%)"
+ f5662a72-e3ed-4e84-9a4e-3a56006e2213 | MAX-size "( biaya tambahan 90%)"
+(4 rows)
+
+
+input json
+{
+  "menu": "Oriental Chicken Spaghetti",
+  "deskripsi": "Spaghetti dengan potongan ayam panggang, disiram saus oriental yang pas manisnya.",
+  "harga": 53636,
+  "kategoriId": "b6845b42-7b2d-4846-aaef-480ad3256e32",
+  "ukurans": [
+      { "id": "74fd609c-c80a-4bb2-b6e6-2deb4056234a" },
+      { "id": "e0d6dd3b-d7eb-4f2f-8966-e1526f86260c" },
+      { "id": "8a25ec41-5229-466d-a83d-5798db5e19ba" },
+      { "id": "f5662a72-e3ed-4e84-9a4e-3a56006e2213" }
+    ]
+}
+
+{
+  "menu": "Deluxe Smoked Beef",
+  "deskripsi": "Daging Sapi Asap, Onion, Keju Mozzarella dan Ekstra Saus Mayonnaise.",
+  "harga": 72728,
+  "kategoriId": "91475da3-535f-4e62-be00-dffb120e24c3",
+  "ukurans": [
+      { "id": "74fd609c-c80a-4bb2-b6e6-2deb4056234a" },
+      { "id": "e0d6dd3b-d7eb-4f2f-8966-e1526f86260c" },
+      { "id": "8a25ec41-5229-466d-a83d-5798db5e19ba" },
+      { "id": "f5662a72-e3ed-4e84-9a4e-3a56006e2213" }
+    ]
+}
+
+{
+  "menu": "Classic Fettucine With Crispy Chicken",
+  "deskripsi": "Pasta Fettuccine, Daging Ayam Asap, Saus Creamy, Chicken Strip Cream Cheese Mayo dan Beef Bits.",
+  "harga": 62728,
+  "kategoriId": "b6845b42-7b2d-4846-aaef-480ad3256e32",
+  "ukurans": [
+      { "id": "74fd609c-c80a-4bb2-b6e6-2deb4056234a" },
+      { "id": "e0d6dd3b-d7eb-4f2f-8966-e1526f86260c" },
+      { "id": "8a25ec41-5229-466d-a83d-5798db5e19ba" },
+      { "id": "f5662a72-e3ed-4e84-9a4e-3a56006e2213" }
+    ]
+}
+
+{
+  "menu": "Sausage Popstick",
+  "deskripsi": "Sosis Ayam Berbalut Roti dengan Taburan Rempah Khas Italia dan Saus Keju.",
+  "harga": 29091,
+  "kategoriId": "0b459655-07a2-43dd-af69-dfd5ee19a327",
+  "ukurans": [
+      { "id": "74fd609c-c80a-4bb2-b6e6-2deb4056234a" },
+      { "id": "e0d6dd3b-d7eb-4f2f-8966-e1526f86260c" }
+    ]
+}
+
+{
+  "menu": "Melon Lemonade",
+  "deskripsi": "Minuman rasa melon, selasih dan jelly melon.",
+  "harga": 12728,
+  "kategoriId": "22414270-24f7-4386-936f-3e771fa72d7e",
+  "ukurans": [
+      { "id": "74fd609c-c80a-4bb2-b6e6-2deb4056234a" },
+      { "id": "e0d6dd3b-d7eb-4f2f-8966-e1526f86260c" }
+    ]
+}
+
+################ ADD
+{
+  "menu": "Mac n Cheese 6 Pcs",
+  "deskripsi": "Pasta Makaroni, Daging Sapi Asap, Beef Bits dan Keju Mozzarella.",
+  "harga": 27273,
+  "kategoriId": "0b459655-07a2-43dd-af69-dfd5ee19a327",
+  "ukurans": [
+      { "id": "74fd609c-c80a-4bb2-b6e6-2deb4056234a" },
+      { "id": "e0d6dd3b-d7eb-4f2f-8966-e1526f86260c" }
+    ]
+}
+
+###########################< PERT 5 : HTTP method, CRUD, Model Controller, Route, Postman >############################
+buat test di postman/thunderclient
+nanti cek nya bisa langsung di run all hasilnya ada di result
+
+###########################< PERT 6 : cookie, header, environment >############################
+npm install cors
+
+app.use(cors())
+nanti muncul di response header pstmannya corsnya *
+
+env variable buat di file.env, gunainnya di index.js
+
+###########################< PERT 7 : Authentication dan Authorization >############################
+find and replace ctrl + h
+buat scema user lalu migrate
+buat auth dan user di routes dan controllers
+npm install bcrypt
+npm install jsonwebtoken
+npm install cookie-parser
+generate secret key
+console.log(require('crypto').randomBytes(256).toString('base64'));
